@@ -78,3 +78,59 @@ button, .panel, .habit-card, .week-day-card, .focus-launch-card, .note-launch-ca
     scroll-behavior: auto !important;
   }
 }
+
+/* Full-interface theme transition */
+#themeToggle {
+  transform-origin: center;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+#themeToggle.ux-theme-icon {
+  animation: ux-theme-icon-turn 680ms cubic-bezier(.2,1.25,.35,1) both;
+}
+@keyframes ux-theme-icon-turn {
+  0% { transform: rotate(0) scale(1); }
+  42% { transform: rotate(205deg) scale(.78); }
+  72% { transform: rotate(330deg) scale(1.12); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+::view-transition-group(root) {
+  animation-duration: 680ms;
+  animation-timing-function: cubic-bezier(.22,1,.36,1);
+}
+::view-transition-old(root) {
+  animation: ux-theme-fade-out 680ms cubic-bezier(.22,1,.36,1) both;
+}
+::view-transition-new(root) {
+  animation: ux-theme-fade-in 680ms cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes ux-theme-fade-out {
+  from { opacity: 1; filter: blur(0); }
+  to { opacity: 0; filter: blur(2px); }
+}
+@keyframes ux-theme-fade-in {
+  from { opacity: 0; filter: blur(2px); }
+  to { opacity: 1; filter: blur(0); }
+}
+/* Graceful fallback for browsers without View Transitions */
+body.ux-theme-wash::after {
+  content: "";
+  position: fixed;
+  z-index: 99999;
+  inset: 0;
+  background: var(--bg);
+  pointer-events: none;
+  animation: ux-theme-wash 720ms cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes ux-theme-wash {
+  from { opacity: .88; }
+  to { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #themeToggle.ux-theme-icon,
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  body.ux-theme-wash::after {
+    animation: none !important;
+  }
+}

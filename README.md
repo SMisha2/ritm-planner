@@ -1,4 +1,4 @@
-# RITM 1.3.0
+# RITM 1.3.1
 
 RITM is a personal day planner designed to make everyday planning faster and clearer.
 
@@ -16,6 +16,12 @@ https://smisha2.github.io/ritm-planner/
 - Search and local data-saving labels are clearer.
 - Subtle task-entry, button, timer-mode and progress animations.
 - The app continues to respect `prefers-reduced-motion` and remains offline-first.
+
+## Theme transition
+
+- Switching light/dark mode uses a smooth full-interface crossfade where supported.
+- The theme icon has its own short rotation and spring animation.
+- Browsers without View Transitions use a soft overlay fade; reduced-motion preferences disable the effects.
 
 ## Development and deployment
 

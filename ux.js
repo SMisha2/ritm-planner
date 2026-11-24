@@ -191,4 +191,39 @@
       window.setTimeout(() => button.classList.remove('ux-clicked'), 500);
     }, { passive: true });
   }
+
+  // Theme switching: crossfade the entire interface via the View Transitions API.
+  // Re-dispatch the real button click inside the transition so the app's own
+  // state and persistence logic remains the single source of truth.
+  const themeButton = document.getElementById('themeToggle');
+  let replayingThemeClick = false;
+  let themeAnimationTimer = 0;
+
+  if (themeButton) {
+    document.addEventListener('click', event => {
+      const clicked = event.target instanceof Element ? event.target.closest('#themeToggle') : null;
+      if (!clicked || replayingThemeClick || reduced) return;
+
+      clicked.classList.remove('ux-theme-icon');
+      void clicked.offsetWidth;
+      clicked.classList.add('ux-theme-icon');
+      window.clearTimeout(themeAnimationTimer);
+      themeAnimationTimer = window.setTimeout(() => clicked.classList.remove('ux-theme-icon'), 760);
+
+      if (typeof document.startViewTransition === 'function') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const transition = document.startViewTransition(() => {
+          replayingThemeClick = true;
+          clicked.click();
+          replayingThemeClick = false;
+        });
+        transition.finished.catch(() => {});
+      } else {
+        document.body.classList.add('ux-theme-wash');
+        window.setTimeout(() => document.body.classList.remove('ux-theme-wash'), 760);
+      }
+    }, true);
+  }
+
 })();
