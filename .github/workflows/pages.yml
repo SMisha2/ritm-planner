@@ -39,15 +39,38 @@ jobs:
           cp "$GITHUB_WORKSPACE/motion.css" "$GITHUB_WORKSPACE/motion.js" "$GITHUB_WORKSPACE/site/"
           python3 - <<'PY'
           from pathlib import Path
+          import json
+          import re
+
           index = Path('index.html')
           html = index.read_text()
-          html = html.replace('<link rel="stylesheet" href="styles.css">', '<link rel="stylesheet" href="styles.css">\n  <link rel="stylesheet" href="motion.css?v=1.2.0">')
-          html = html.replace('<script src="app.js" defer></script>', '<script src="app.js" defer></script>\n  <script src="motion.js?v=1.2.0" defer></script>')
+          html = html.replace(
+              '<link rel="stylesheet" href="styles.css">',
+              '<link rel="stylesheet" href="styles.css">\n  <link rel="stylesheet" href="motion.css?v=1.2.0">'
+          )
+          html = html.replace(
+              '<script src="app.js" defer></script>',
+              '<script src="app.js" defer></script>\n  <script src="motion.js?v=1.2.0" defer></script>'
+          )
           index.write_text(html)
+
           worker = Path('sw.js')
-          sw = worker.read_text().replace('ritm-static-v5', 'ritm-static-v6')
-          sw = sw.replace("'./app.js',", "'./app.js', './motion.css', './motion.js',")
+          sw = re.sub(
+              r"const CACHE_NAME = ['\"][^'\"]+['\"];",
+              "const CACHE_NAME = 'ritm-static-v6';",
+              worker.read_text(),
+              count=1
+          )
+          sw = sw.replace(
+              "'./app.js',",
+              "'./app.js', './motion.css?v=1.2.0', './motion.js?v=1.2.0',"
+          )
           worker.write_text(sw)
+
+          package = Path('package.json')
+          metadata = json.loads(package.read_text())
+          metadata['version'] = '1.2.0'
+          package.write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + '\n')
           PY
           cp -a . "$GITHUB_WORKSPACE/site/"
 
