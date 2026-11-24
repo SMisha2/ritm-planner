@@ -1,24 +1,25 @@
 # RITM
 
-RITM is a calm personal day planner for tasks, habits, notes, weekly planning and focus sessions.
+RITM is a personal day planner for daily tasks, habits, notes, weekly planning and focus sessions. It is a static web app with local browser storage, dark and light themes, offline/PWA support, and backup export/import.
 
-## Project source
-
-The complete application source, assets, tests and local development files are included in [`RITM.zip`](./RITM.zip). The archive preserves the complete `RITM/` project folder.
-
-## GitHub Pages
-
-The repository publishes the contents of the `RITM/` folder through GitHub Actions. The workflow extracts the archive, runs JavaScript syntax checks and the automated test suite, then deploys the static app to GitHub Pages.
-
-After the first successful Actions deployment, the site will be available at:
+## Live site
 
 https://smisha2.github.io/ritm-planner/
 
-## Local development
+## Deployment
 
-1. Extract `RITM.zip`.
-2. Open the extracted `RITM` folder.
-3. Run `npm run check` and `npm test`.
-4. Start a local static server, or open `index.html` in a browser.
+The GitHub Actions workflow rebuilds the original project ZIP from text fragments in `source/archive.part-*`, validates the archive, extracts the app, runs syntax checks and the automated test suite, then deploys the static site to GitHub Pages.
 
-RITM stores app data locally in the browser. It does not require an account or a backend service.
+## Rebuild the source archive locally
+
+From the repository root:
+
+```bash
+cat source/archive.part-* | base64 --decode > RITM.zip
+unzip RITM.zip
+cd RITM
+npm run check
+npm test
+```
+
+The app does not require a server-side database or account. User data is stored in the browser.

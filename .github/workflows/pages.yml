@@ -29,8 +29,12 @@ jobs:
         with:
           node-version: 22
 
-      - name: Extract and test RITM
+      - name: Rebuild, extract and test RITM
+        shell: bash
         run: |
+          set -euo pipefail
+          cat source/archive.part-* | base64 --decode > RITM.zip
+          unzip -tq RITM.zip
           mkdir -p site
           unzip -q RITM.zip -d extracted
           cd extracted/RITM
