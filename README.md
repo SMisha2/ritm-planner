@@ -8,7 +8,7 @@ https://smisha2.github.io/ritm-planner/
 
 ## Deployment
 
-The GitHub Actions workflow rebuilds the original project ZIP from text fragments in `source/archive.part-*`, validates the archive, extracts the app, runs syntax checks and the automated test suite, then deploys the static site to GitHub Pages.
+GitHub Actions rebuilds the original project ZIP from the base64 text fragments in `source/archive.part-*`, validates the archive, runs JavaScript syntax checks and all automated tests, then publishes the static app to the `gh-pages` branch. GitHub Pages serves the root of that branch.
 
 ## Rebuild the source archive locally
 
