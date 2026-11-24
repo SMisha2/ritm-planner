@@ -28,7 +28,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat source/archive.part-* | base64 --decode > RITM.zip
+          cat source/archive-v2/part-* | base64 --decode > RITM.zip
           unzip -tq RITM.zip
           mkdir -p site
           unzip -q RITM.zip -d extracted
