@@ -134,3 +134,6 @@ body.ux-theme-wash::after {
     animation: none !important;
   }
 }
+
+/* Theme fade uses opacity/filter only, so layout and stored data never move. */
+body { will-change: opacity, filter; }

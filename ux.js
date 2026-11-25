@@ -219,6 +219,28 @@
           replayingThemeClick = false;
         });
         transition.finished.catch(() => {});
+      } else if (typeof document.body.animate === 'function') {
+        // Cross-browser fallback: fade the whole interface down, switch in the
+        // middle, then bring it back. The theme button's own handler still runs.
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const fadeOut = document.body.animate(
+          [{ opacity: 1, filter: 'blur(0px)' }, { opacity: .18, filter: 'blur(2px)' }],
+          { duration: 260, easing: 'cubic-bezier(.4,0,.8,1)', fill: 'forwards' }
+        );
+        fadeOut.onfinish = () => {
+          replayingThemeClick = true;
+          clicked.click();
+          replayingThemeClick = false;
+          const fadeIn = document.body.animate(
+            [{ opacity: .18, filter: 'blur(2px)' }, { opacity: 1, filter: 'blur(0px)' }],
+            { duration: 520, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' }
+          );
+          fadeIn.onfinish = () => {
+            fadeOut.cancel();
+            fadeIn.cancel();
+          };
+        };
       } else {
         document.body.classList.add('ux-theme-wash');
         window.setTimeout(() => document.body.classList.remove('ux-theme-wash'), 760);
