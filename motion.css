@@ -1,0 +1,109 @@
+/* RITM Motion — buttery interactions and cinematic micro-animations */
+:root {
+  --ritm-ease: cubic-bezier(.22,1,.36,1);
+  --ritm-spring: cubic-bezier(.18,1.32,.38,1);
+}
+html { scroll-behavior: smooth; }
+button, .task-row, .panel, .day-hero, .habit-card, .focus-stage, .focus-launch-card, .note-launch-card, .settings-card, .week-day-card {
+  transition-timing-function: var(--ritm-ease);
+}
+button { transition: transform 420ms var(--ritm-spring), box-shadow 420ms var(--ritm-ease), filter 320ms ease, background-color 420ms ease, border-color 420ms ease; }
+button:active { transform: translateY(1px) scale(.965); }
+button:focus-visible { outline-offset: 4px; transition: outline-offset 220ms ease; }
+.button-primary { position: relative; isolation: isolate; overflow: hidden; }
+.button-primary::after {
+  content: ""; position: absolute; inset: -60% auto -60% -35%; width: 24%;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,.34),transparent);
+  transform: translateX(-180%) rotate(18deg); transition: transform 900ms var(--ritm-ease); pointer-events: none;
+}
+.button-primary:hover::after { transform: translateX(650%) rotate(18deg); }
+.nav-item, .mobile-nav button { transition: transform 420ms var(--ritm-spring), background 360ms ease, color 360ms ease; }
+.nav-item:hover, .mobile-nav button:hover { transform: translateX(3px); }
+.mobile-nav button:hover { transform: translateY(-3px); }
+#pageContainer.motion-entering > * {
+  animation: ritm-cinematic-enter 860ms var(--ritm-ease) both;
+  animation-delay: calc(var(--motion-step, 0) * 52ms);
+}
+@keyframes ritm-cinematic-enter {
+  from { opacity: 0; transform: translate3d(0,22px,0) scale(.985); filter: blur(7px); }
+  to { opacity: 1; transform: translate3d(0,0,0) scale(1); filter: blur(0); }
+}
+.day-hero { isolation: isolate; overflow: hidden; }
+.day-hero::before, .day-hero::after {
+  content: ""; position: absolute; z-index: -1; pointer-events: none; border-radius: 50%;
+}
+.day-hero::before {
+  width: 66%; aspect-ratio: 1; top: -72%; right: -12%;
+  background: radial-gradient(circle,rgba(145,125,255,.23),rgba(91,108,230,.06) 45%,transparent 72%);
+  animation: ritm-nebula-drift 15s ease-in-out infinite alternate;
+}
+.day-hero::after {
+  width: 42%; aspect-ratio: 1; bottom: -88%; left: 8%;
+  background: radial-gradient(circle,rgba(115,238,201,.13),transparent 68%);
+  animation: ritm-nebula-drift 19s ease-in-out infinite alternate-reverse;
+}
+@keyframes ritm-nebula-drift { from { transform: translate3d(-3%,2%,0) scale(.9); } to { transform: translate3d(5%,-4%,0) scale(1.14); } }
+.panel, .habit-card, .focus-stage, .focus-launch-card, .note-launch-card, .settings-card, .week-day-card {
+  position: relative; overflow: hidden;
+  transition: transform 520ms var(--ritm-spring), box-shadow 520ms var(--ritm-ease), border-color 420ms ease;
+}
+.panel::after, .day-hero::marker { pointer-events: none; }
+.panel:hover, .habit-card:hover, .focus-launch-card:hover, .note-launch-card:hover, .settings-card:hover, .week-day-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 55px rgba(28,27,62,.10);
+}
+.day-hero, .panel, .habit-card, .focus-stage, .focus-launch-card, .note-launch-card, .settings-card, .week-day-card {
+  --motion-x: 50%; --motion-y: 45%;
+}
+.motion-spotlight::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 1;
+  background: radial-gradient(260px circle at var(--motion-x) var(--motion-y),rgba(255,255,255,.12),transparent 68%);
+  opacity: 0; transition: opacity 420ms ease;
+}
+.motion-spotlight:hover::before { opacity: 1; }
+.task-row { position: relative; overflow: hidden; transition: transform 480ms var(--ritm-spring), background 360ms ease, border-color 360ms ease, box-shadow 360ms ease; }
+.task-row:hover { transform: translateX(3px); }
+.task-row.motion-win { animation: ritm-task-win 720ms var(--ritm-spring) both; }
+@keyframes ritm-task-win {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(116,220,186,0); }
+  38% { transform: scale(1.012); box-shadow: 0 0 0 7px rgba(116,220,186,.12),0 14px 36px rgba(60,180,145,.12); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(116,220,186,0); }
+}
+.motion-burst { position: absolute; z-index: 4; left: 25px; top: 26px; width: 1px; height: 1px; pointer-events: none; }
+.motion-burst i { position: absolute; font-style: normal; color: var(--mint,#73e7c2); font-size: 12px; animation: ritm-spark 760ms var(--ritm-spring) both; }
+.motion-burst i:nth-child(1) { --dx:-24px; --dy:-23px; }
+.motion-burst i:nth-child(2) { --dx:28px; --dy:-27px; animation-delay:35ms; }
+.motion-burst i:nth-child(3) { --dx:42px; --dy:8px; animation-delay:65ms; }
+.motion-burst i:nth-child(4) { --dx:-12px; --dy:30px; animation-delay:20ms; }
+.motion-burst i:nth-child(5) { --dx:11px; --dy:-42px; animation-delay:50ms; }
+@keyframes ritm-spark { from { opacity: 0; transform: translate3d(0,0,0) scale(.2) rotate(-35deg); } 30% { opacity: 1; } to { opacity: 0; transform: translate3d(var(--dx),var(--dy),0) scale(1.3) rotate(35deg); } }
+.progress-track > i { position: relative; overflow: hidden; }
+.progress-track > i::after {
+  content: ""; position: absolute; inset: 0 auto 0 -45%; width: 35%;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
+  animation: ritm-progress-glint 3.4s ease-in-out infinite;
+}
+@keyframes ritm-progress-glint { 0%,35% { transform: translateX(0); opacity: 0; } 55% { opacity: 1; } 100% { transform: translateX(460%); opacity: 0; } }
+.focus-stage.is-running { animation: ritm-focus-aura 4.8s ease-in-out infinite; }
+@keyframes ritm-focus-aura { 0%,100% { box-shadow: 0 14px 42px rgba(80,71,155,.08); } 50% { box-shadow: 0 18px 58px rgba(113,101,216,.22); } }
+.timer-value { display: inline-block; transition: transform 280ms var(--ritm-spring), filter 280ms ease; }
+.timer-value.motion-tick { animation: ritm-timer-tick 280ms var(--ritm-spring); }
+@keyframes ritm-timer-tick { from { opacity: .35; transform: translateY(5px) scale(.97); filter: blur(2px); } to { opacity: 1; transform: none; filter: none; } }
+dialog[open] .modal-card { animation: ritm-modal-enter 520ms var(--ritm-spring) both; }
+dialog[open]::backdrop { animation: ritm-backdrop-enter 360ms ease both; backdrop-filter: blur(5px); }
+@keyframes ritm-modal-enter { from { opacity: 0; transform: translateY(18px) scale(.965); } to { opacity: 1; transform: none; } }
+@keyframes ritm-backdrop-enter { from { background: rgba(12,14,25,0); } to { background: rgba(12,14,25,.38); } }
+.toast { animation: ritm-toast-enter 520ms var(--ritm-spring) both; }
+@keyframes ritm-toast-enter { from { opacity: 0; transform: translate(-50%,18px) scale(.94); } 72% { transform: translate(-50%,-2px) scale(1.015); } to { opacity: 1; transform: translate(-50%,0) scale(1); } }
+@media (hover:none) {
+  .panel:hover, .habit-card:hover, .focus-launch-card:hover, .note-launch-card:hover, .settings-card:hover, .week-day-card:hover { transform: none; }
+}
+@media (max-width: 680px) {
+  #pageContainer.motion-entering > * { animation-duration: 680ms; }
+  .day-hero::before { animation-duration: 22s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,*::before,*::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  #pageContainer.motion-entering > * { animation: none !important; }
+}
