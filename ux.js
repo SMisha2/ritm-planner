@@ -192,60 +192,35 @@
     }, { passive: true });
   }
 
-  // Theme switching: crossfade the entire interface via the View Transitions API.
-  // Re-dispatch the real button click inside the transition so the app's own
-  // state and persistence logic remains the single source of truth.
+  // Animate the actual theme change, without intercepting the app's click handler.
   const themeButton = document.getElementById('themeToggle');
-  let replayingThemeClick = false;
   let themeAnimationTimer = 0;
 
-  if (themeButton) {
+  if (themeButton && !reduced) {
     document.addEventListener('click', event => {
       const clicked = event.target instanceof Element ? event.target.closest('#themeToggle') : null;
-      if (!clicked || replayingThemeClick || reduced) return;
-
+      if (!clicked) return;
       clicked.classList.remove('ux-theme-icon');
       void clicked.offsetWidth;
       clicked.classList.add('ux-theme-icon');
       window.clearTimeout(themeAnimationTimer);
       themeAnimationTimer = window.setTimeout(() => clicked.classList.remove('ux-theme-icon'), 760);
-
-      if (typeof document.startViewTransition === 'function') {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        const transition = document.startViewTransition(() => {
-          replayingThemeClick = true;
-          clicked.click();
-          replayingThemeClick = false;
-        });
-        transition.finished.catch(() => {});
-      } else if (typeof document.body.animate === 'function') {
-        // Cross-browser fallback: fade the whole interface down, switch in the
-        // middle, then bring it back. The theme button's own handler still runs.
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        const fadeOut = document.body.animate(
-          [{ opacity: 1, filter: 'blur(0px)' }, { opacity: .18, filter: 'blur(2px)' }],
-          { duration: 260, easing: 'cubic-bezier(.4,0,.8,1)', fill: 'forwards' }
-        );
-        fadeOut.onfinish = () => {
-          replayingThemeClick = true;
-          clicked.click();
-          replayingThemeClick = false;
-          const fadeIn = document.body.animate(
-            [{ opacity: .18, filter: 'blur(2px)' }, { opacity: 1, filter: 'blur(0px)' }],
-            { duration: 520, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'forwards' }
-          );
-          fadeIn.onfinish = () => {
-            fadeOut.cancel();
-            fadeIn.cancel();
-          };
-        };
-      } else {
-        document.body.classList.add('ux-theme-wash');
-        window.setTimeout(() => document.body.classList.remove('ux-theme-wash'), 760);
-      }
     }, true);
+  }
+
+  let lastTheme = root.getAttribute('data-theme');
+  if (!reduced && lastTheme) {
+    const themeObserver = new MutationObserver(() => {
+      const nextTheme = root.getAttribute('data-theme');
+      if (!nextTheme || nextTheme === lastTheme) return;
+      lastTheme = nextTheme;
+      root.classList.remove('ux-theme-transition');
+      void root.offsetWidth;
+      root.classList.add('ux-theme-transition');
+      window.clearTimeout(themeAnimationTimer);
+      themeAnimationTimer = window.setTimeout(() => root.classList.remove('ux-theme-transition'), 820);
+    });
+    themeObserver.observe(root, { attributes: true, attributeFilter: ['data-theme'] });
   }
 
 })();

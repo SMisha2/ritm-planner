@@ -1,4 +1,4 @@
-# RITM 1.3.2
+# RITM 1.3.3
 
 RITM is a personal day planner designed to make everyday planning faster and clearer.
 
@@ -19,7 +19,7 @@ https://smisha2.github.io/ritm-planner/
 
 ## Theme transition
 
-- Switching light/dark mode uses a smooth full-interface crossfade where supported, with a staged fade fallback for browsers without View Transitions.
+- Switching light/dark mode triggers a full-screen theme-colour fade after the app applies the selected theme. The toggle icon also rotates with a short spring animation.
 - The theme icon has its own short rotation and spring animation.
 - Browsers without View Transitions use a soft overlay fade; reduced-motion preferences disable the effects.
 

@@ -79,7 +79,7 @@ button, .panel, .habit-card, .week-day-card, .focus-launch-card, .note-launch-ca
   }
 }
 
-/* Full-interface theme transition */
+/* Full-screen theme fade, triggered by the app's real data-theme change */
 #themeToggle {
   transform-origin: center;
   transform-style: preserve-3d;
@@ -94,46 +94,27 @@ button, .panel, .habit-card, .week-day-card, .focus-launch-card, .note-launch-ca
   72% { transform: rotate(330deg) scale(1.12); }
   100% { transform: rotate(360deg) scale(1); }
 }
-::view-transition-group(root) {
-  animation-duration: 680ms;
-  animation-timing-function: cubic-bezier(.22,1,.36,1);
-}
-::view-transition-old(root) {
-  animation: ux-theme-fade-out 680ms cubic-bezier(.22,1,.36,1) both;
-}
-::view-transition-new(root) {
-  animation: ux-theme-fade-in 680ms cubic-bezier(.22,1,.36,1) both;
-}
-@keyframes ux-theme-fade-out {
-  from { opacity: 1; filter: blur(0); }
-  to { opacity: 0; filter: blur(2px); }
-}
-@keyframes ux-theme-fade-in {
-  from { opacity: 0; filter: blur(2px); }
-  to { opacity: 1; filter: blur(0); }
-}
-/* Graceful fallback for browsers without View Transitions */
-body.ux-theme-wash::after {
+html.ux-theme-transition::after {
   content: "";
   position: fixed;
   z-index: 99999;
   inset: 0;
-  background: var(--bg);
   pointer-events: none;
-  animation: ux-theme-wash 720ms cubic-bezier(.22,1,.36,1) both;
+  animation: ux-theme-veil 760ms cubic-bezier(.22,1,.36,1) both;
 }
-@keyframes ux-theme-wash {
-  from { opacity: .88; }
+html[data-theme="light"].ux-theme-transition::after {
+  background: linear-gradient(135deg, #f2f3ef 0%, #ffffff 54%, #f3f1fb 100%);
+}
+html[data-theme="dark"].ux-theme-transition::after {
+  background: linear-gradient(135deg, #151722 0%, #25283a 54%, #1b2233 100%);
+}
+@keyframes ux-theme-veil {
+  from { opacity: .98; }
   to { opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   #themeToggle.ux-theme-icon,
-  ::view-transition-old(root),
-  ::view-transition-new(root),
-  body.ux-theme-wash::after {
+  html.ux-theme-transition::after {
     animation: none !important;
   }
 }
-
-/* Theme fade uses opacity/filter only, so layout and stored data never move. */
-body { will-change: opacity, filter; }
